@@ -47,7 +47,6 @@
         "id": "8a3770cb5896d38a",
         "type": "function",
         "z": "62df7a5f23611cb9",
-        "d": true,
         "name": "Init",
         "func": "const fs = global.get('fs'); // Access the fs module from the global context\n\nfunction createFingerDataJSON() {\n  const fingerData = {};\n\n  // Create the JSON structure for 1000 finger IDs with \"OUT\" status\n  for (let i = 1; i <= 1000; i++) {\n    fingerData[i] = { status: \"OUT\" };\n  }\n\n  // Convert the data to a JSON string\n  const jsonData = JSON.stringify(fingerData, null, 2);\n\n  // Specify the file path\n  const filePath = 'fingerData.json';\n\n  // Write the JSON data to a file\n  fs.writeFileSync(filePath, jsonData);\n\n  console.log(\"JSON file 'fingerData.json' created.\");\n}\n\n// Call the function to create the JSON file\ncreateFingerDataJSON();\n",
         "outputs": 1,
