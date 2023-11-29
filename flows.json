@@ -1,6 +1,6 @@
 [
     {
-        "id": "62df7a5f23611cb9",
+        "id": "afec3cf4e98581db",
         "type": "tab",
         "label": "Flow 1",
         "disabled": false,
@@ -10,13 +10,13 @@
     {
         "id": "932323f61db065ca",
         "type": "websocket-listener",
-        "path": "/test/esp32",
+        "path": "/test2/hb6",
         "wholemsg": "true"
     },
     {
-        "id": "406bdf6ad4215140",
+        "id": "cc3c056fd47e9216",
         "type": "inject",
-        "z": "62df7a5f23611cb9",
+        "z": "afec3cf4e98581db",
         "name": "",
         "props": [
             {
@@ -38,15 +38,15 @@
         "y": 160,
         "wires": [
             [
-                "8a3770cb5896d38a",
-                "0006112326c0c816"
+                "77cc8dbb6db801ab",
+                "0f67b3726bad64c7"
             ]
         ]
     },
     {
-        "id": "8a3770cb5896d38a",
+        "id": "77cc8dbb6db801ab",
         "type": "function",
-        "z": "62df7a5f23611cb9",
+        "z": "afec3cf4e98581db",
         "d": true,
         "name": "Init",
         "func": "const fs = global.get('fs'); // Access the fs module from the global context\n\nfunction createFingerDataJSON() {\n  const fingerData = {};\n\n  // Create the JSON structure for 1000 finger IDs with \"OUT\" status\n  for (let i = 1; i <= 1000; i++) {\n    fingerData[i] = { status: \"OUT\" };\n  }\n\n  // Convert the data to a JSON string\n  const jsonData = JSON.stringify(fingerData, null, 2);\n\n  // Specify the file path\n  const filePath = 'fingerData.json';\n\n  // Write the JSON data to a file\n  fs.writeFileSync(filePath, jsonData);\n\n  console.log(\"JSON file 'fingerData.json' created.\");\n}\n\n// Call the function to create the JSON file\ncreateFingerDataJSON();\n",
@@ -60,14 +60,14 @@
         "y": 200,
         "wires": [
             [
-                "59cd0223cb6f7c13"
+                "64c2dca947b715d9"
             ]
         ]
     },
     {
-        "id": "59cd0223cb6f7c13",
+        "id": "64c2dca947b715d9",
         "type": "debug",
-        "z": "62df7a5f23611cb9",
+        "z": "afec3cf4e98581db",
         "name": "debug 1",
         "active": true,
         "tosidebar": true,
@@ -82,11 +82,11 @@
         "wires": []
     },
     {
-        "id": "0006112326c0c816",
+        "id": "0f67b3726bad64c7",
         "type": "function",
-        "z": "62df7a5f23611cb9",
+        "z": "afec3cf4e98581db",
         "name": "getstatus",
-        "func": "const fs = global.get('fs'); // Access the fs module from the global context\n\nfunction toggleFingerStatus(requestedId) {\n  // Read the JSON file\n  const filePath = 'fingerData.json'; // Update with your actual file path\n  let fingerData = JSON.parse(fs.readFileSync(filePath, 'utf8'));\n\n  // Check if the requested ID is within the valid range\n  if (requestedId >= 1 && requestedId <= 1000) {\n    const status = fingerData[requestedId] && fingerData[requestedId].status;\n\n    if (status !== undefined) {\n      // Toggle the status\n      const newStatus = status === 'IN' ? 'OUT' : 'IN';\n  \n      // Update the status in the JSON data\n      fingerData[requestedId].status = newStatus;\n\n      // Write the updated JSON data back to the file\n      fs.writeFileSync(filePath, JSON.stringify(fingerData, null, 2));\n\n      return { payload: newStatus };\n    } else {\n      return { payload: 'ID not found' };\n    }\n  } else {\n    return { payload: 'Invalid ID' };\n  }\n}\n\n// Call the function to toggle the status for a specific ID\nconst requestedId = msg.payload; // Replace with the ID you want to toggle\nconst result = toggleFingerStatus(requestedId);\nconst payloadValue = result.payload; // Extract the payload property from the result object\nconst payloadString = payloadValue.toString(); // Convert the payload to a string\n\nmsg.url = \"https://script.google.com/macros/s/AKfycbxXGpoUY5sPNRIxA1lVw3gTh0U92gXeStGfNJN_8FfKcV0tAMf7LYePOAkGAGul0kHiCw/exec?fingerid=\" + requestedId + \"&&stat=\" + payloadString;\n// return msg;\nconsole.log(msg.url);\nconsole.log(payloadString)\nmsg.payload = payloadValue\nreturn msg; // Return the result to be used in your Node-RED flow\n",
+        "func": "const fs = global.get('fs'); // Access the fs module from the global context\n\nfunction toggleFingerStatus(requestedId) {\n  // Read the JSON file\n  const filePath = 'fingerData.json'; // Update with your actual file path\n  let fingerData = JSON.parse(fs.readFileSync(filePath, 'utf8'));\n\n  // Check if the requested ID is within the valid range\n  if (requestedId >= 1 && requestedId <= 1000) {\n    const status = fingerData[requestedId] && fingerData[requestedId].status;\n\n    if (status !== undefined) {\n      // Toggle the status\n      const newStatus = status === 'IN' ? 'OUT' : 'IN';\n  \n      // Update the status in the JSON data\n      fingerData[requestedId].status = newStatus;\n      var   r1;\n      if(requestedId%2==0){\n        r1 = requestedId - 1;\n      }else{\n        r1 = requestedId + 1;\n      }\n      // Write the updated JSON data back to the file\n      fs.writeFileSync(filePath, JSON.stringify(fingerData, null, 2));\n\n      return { payload: newStatus };\n    } else {\n      return { payload: 'ID not found' };\n    }\n  } else {\n    return { payload: 'Invalid ID' };\n  }\n}\n\n// Call the function to toggle the status for a specific ID\nconst requestedId = msg.payload; // Replace with the ID you want to toggle\nconst result = toggleFingerStatus(requestedId);\nconst payloadValue = result.payload; // Extract the payload property from the result object\nconst payloadString = payloadValue.toString(); // Convert the payload to a string\n\nmsg.url = \"https://script.google.com/macros/s/AKfycbxXGpoUY5sPNRIxA1lVw3gTh0U92gXeStGfNJN_8FfKcV0tAMf7LYePOAkGAGul0kHiCw/exec?fingerid=\" + requestedId + \"&&stat=\" + payloadString;\n// return msg;\nconsole.log(msg.url);\nconsole.log(payloadString)\nmsg.payload = payloadValue\nreturn msg; // Return the result to be used in your Node-RED flow\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -97,17 +97,17 @@
         "y": 340,
         "wires": [
             [
-                "59cd0223cb6f7c13",
-                "e860b49b8dc8a74e",
-                "4058392ffb02b229",
-                "c895c601035c435a"
+                "64c2dca947b715d9",
+                "1cbb68b35bf46e9d",
+                "8711ca1647399954",
+                "36b3fe65677dd628"
             ]
         ]
     },
     {
-        "id": "e860b49b8dc8a74e",
+        "id": "1cbb68b35bf46e9d",
         "type": "http request",
-        "z": "62df7a5f23611cb9",
+        "z": "afec3cf4e98581db",
         "name": "",
         "method": "GET",
         "ret": "txt",
@@ -124,29 +124,30 @@
         "y": 240,
         "wires": [
             [
-                "59cd0223cb6f7c13"
+                "64c2dca947b715d9"
             ]
         ]
     },
     {
-        "id": "cb4946ea0314f90c",
+        "id": "f00695f044d228da",
         "type": "websocket in",
-        "z": "62df7a5f23611cb9",
+        "z": "afec3cf4e98581db",
         "name": "",
         "server": "932323f61db065ca",
         "client": "",
-        "x": 200,
+        "x": 190,
         "y": 260,
         "wires": [
             [
-                "0006112326c0c816"
+                "0f67b3726bad64c7",
+                "64c2dca947b715d9"
             ]
         ]
     },
     {
-        "id": "d33541772dc8a6fc",
+        "id": "9b0b43685e3c91c3",
         "type": "websocket out",
-        "z": "62df7a5f23611cb9",
+        "z": "afec3cf4e98581db",
         "name": "",
         "server": "932323f61db065ca",
         "client": "",
@@ -155,29 +156,9 @@
         "wires": []
     },
     {
-        "id": "4058392ffb02b229",
-        "type": "function",
-        "z": "62df7a5f23611cb9",
-        "name": "function 1",
-        "func": "var a  = msg.payload\nreturn a;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 560,
-        "y": 400,
-        "wires": [
-            [
-                "d33541772dc8a6fc"
-            ]
-        ]
-    },
-    {
-        "id": "c895c601035c435a",
+        "id": "8711ca1647399954",
         "type": "debug",
-        "z": "62df7a5f23611cb9",
+        "z": "afec3cf4e98581db",
         "name": "debug 2",
         "active": true,
         "tosidebar": true,
@@ -190,5 +171,25 @@
         "x": 680,
         "y": 460,
         "wires": []
+    },
+    {
+        "id": "36b3fe65677dd628",
+        "type": "function",
+        "z": "afec3cf4e98581db",
+        "name": "function 1",
+        "func": "const payloadValue = msg\nmsg.payload= payloadValue.payload\nmsg.url = 0\n\n// Return the modified message\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 440,
+        "wires": [
+            [
+                "9b0b43685e3c91c3"
+            ]
+        ]
     }
 ]
